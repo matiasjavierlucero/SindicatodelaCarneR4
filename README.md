@@ -1,6 +1,6 @@
 
-#Software sindicato de la carne de RioIV
+# Software sindicato de la carne de RioIV
 <br>
-##-------ITECLABS-------
+  - ITECLABS
 <br>
-###--Matias y Alfonso--2020-
+  - Matias Lucero y Alfonso Sargiotto --2020-
