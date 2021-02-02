@@ -1,11 +1,7 @@
-# Evaluacion Final Integradora-Programacion III - 
-
-## Modelo de la Base de Datos
-
-![Database_Model](https://github.com/matiasjavierlucero/EfiLaravel/blob/master/public/images/Diagram.png)
+# SISGEPA - 
 
 <a href="#"><img src="https://img.shields.io/badge/license-MIT-green"></a>
-<a href="#"><img src="https://img.shields.io/badge/php-^7.2.28-blue"></a>
+<a href="#"><img src="https://img.shields.io/badge/Python-^2.7-blue"></a>
 <a href="#"><img src="https://img.shields.io/badge/Flask-red"></a>
 
 
