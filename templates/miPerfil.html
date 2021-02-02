@@ -1,0 +1,210 @@
+{% extends 'layout.html' %} {% block title %}Mi Perfil-SISGEPA{% endblock %}
+
+{% block body %}
+{% with messages = get_flashed_messages(with_categories = true ) %} {% if messages %}
+{% for category, message in messages %}
+<div class="alert alert-{{ category }} alert-dismissible" role="alert">
+    {{ message }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+</div>
+</div>
+{% endfor %} {% endif %}{% endwith %}
+
+
+<!-- Por el momento solo autorizaremos el cambio de password y email  -->
+<!-- Formulario  -->
+<div class="row">
+    <div class="col text-center w-100">
+    <h1>Perfil {{perfilUsuario.0.1}}
+    </h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col"></div>
+            <div class="col text-center w-100">
+            {% if session['tipoUser'] == 2 %}
+            
+            <div class="label">Razon Social</div>
+            <input type="text" name="razon" class="form-control" value="{{perfilUsuario.0.6}}" disabled>
+            <div class="label">CUIT</div>
+            <input type="text" name="CUIT" class="form-control" id="Cuit" value="{{perfilUsuario.0.9}}" disabled>
+            <div class="label">Domicilio</div>
+            <input type="text" name="Domicilio" class="form-control" id="Domicilio" minlength="6" value="{{perfilUsuario.0.7}}" disabled>
+            <div class="label">Localidad</div>
+            <input type="text" name="Localidad" class="form-control" id="Localidad" minlength="6" value="{{perfilUsuario.0.8}}" disabled>
+            <div class="label">Telefono</div>
+            <input type="text" name="Telefono" class="form-control" id="Telefono" minlength="6" value="{{perfilUsuario.0.10}}" disabled>
+            <div class="label">Celular</div>
+            <input type="text" name="Celular" class="form-control" id="Celular" minlength="6" value="{{perfilUsuario.0.11}}" disabled>
+            <div class="label">Email</div>
+            <input type="text" name="Email" class="form-control" id="Email" minlength="6" value="{{perfilUsuario.0.14}}" disabled>
+    
+             {%endif%}
+            <div class="label">Usuario</div>
+            <input type="text" class="form-control" value="{{perfilUsuario.0.1}}" disabled>
+            </div>
+
+            {% if session['tipoUser'] == 1 or session['tipoUser'] == 3 %}
+            <!-- Para que no quede taaaan arriba el footer -->            
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            
+            {%endif%}
+    <div class="col">
+        {% if session['tipoUser'] == 2 %}
+        <br>
+        <button class="btn btn-info mt-4" data-toggle="modal" data-target="#modal" style="width: 250px;">Modificar Datos de Contacto <i class="fa fa-user" aria-hidden="true"></i></button>
+        {%endif%}
+        <button class="btn btn-primary mt-4" data-toggle="modal" data-target="#modalModificaPass" style="width: 250px;">Modificar Contraseña     <i class="fa fa-lock ml-5" aria-hidden="true"></i></button>
+    </div>
+</div>
+
+
+<!-- Modal MOdificar Datos Personales-->
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ingrese los cambios</h5>
+                    <button type="button" class="close" data-dismiss="modalModificaPass" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+                <div class="col text-center w-100">
+                <form action="/modificaDatos" method="POST">
+                <div class="label"><b> Domicilio</b></div>
+                <input type="text" name="DomicilioN" class="form-control" id="DomicilioN" minlength="6" value="{{perfilUsuario.0.7}}"
+                    required>
+                <div class="label"><b> Localidad</b></div>
+                <input type="text" name="LocalidadN" class="form-control" id="LocalidadN" minlength="6" value="{{perfilUsuario.0.8}}"
+                    required>
+                <div class="label"><b> Telefono</b></div>
+                <input type="text" name="TelefonoN" class="form-control" id="TelefonoN" minlength="10" maxlength="10" value="{{perfilUsuario.0.10}}"
+                    required>
+                <div class="label"><b> Celular</b></div>
+                <input type="text" name="CelularN" class="form-control" id="CelularN" minlength="10" maxlength="10" value="{{perfilUsuario.0.11}}"
+                    required>
+                <div class="label"><b> Email</b></div>
+                <input type="text" name="EmailN" class="form-control" id="EmailN" minlength="6" value="{{perfilUsuario.0.14}}"
+                    required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="/" class="btn btn-danger m-4">Cancelar</a>
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal Modificar Password-->
+<div class="modal fade" id="modalModificaPass" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modificar Contraseña</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+                <div class="col text-center w-100">
+                    <form action="/cambioPass" method="post">
+                    <input type="text" class="form-control d-none" name="id_usuario" value="{{perfilUsuario.0.0}}" id="id_usuario">
+                    
+                    <div class="label"><b>Contraseña Actual</b></div>
+                    <input type="password" name="actual_usuario" class="form-control" id="actual_usuario" required>
+                    <input type="checkbox" class="m-1" onclick="myFunction()">Mostrar
+                    <div class="label"><b> Nueva Contraseña</b></div>
+                    <input type="password" name="nueva_usuario" class="form-control" id="nueva_usuario" minlength="6" required>
+                    <input type="checkbox" class="m-1" onclick="myFunction1()">Mostrar
+                    <div class="label"><b> Repita Contraseña</b></div>
+                    <input type="password" name="repite_usuario" class="form-control" id="repite_usuario" minlength="6" required>
+                    <input type="checkbox" class="m-1" onclick="myFunction2()">Mostrar
+                    <p style="font-size: 0.9rem;color:red" id="alerta0" class="d-none">¡Las contraseñas no coinciden!</p>
+                    <p style="font-size: 0.9rem;color:green" id="alerta1" class="d-none">¡Las contraseñas coinciden. <br> Puede Continuar!</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="/" class="btn btn-danger m-4">Cancelar</a>
+                <button type="submit" class="btn btn-success m-4" id="modificar" >Modificar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    
+
+
+    $("#repite_usuario").blur(function () {
+            if ($("#nueva_usuario").val() == $("#repite_usuario").val()) {
+            $("#alerta1").removeClass('d-none')
+            $("#alerta0").addClass('d-none')
+        } else {
+          
+            $("#alerta0").removeClass('d-none')
+            $("#alerta1").addClass('d-none')
+        }
+        });
+    $("#nueva_usuario").blur(function () {
+            if ($("#nueva_usuario").val() == $("#repite_usuario").val()) {
+                $("#alerta1").removeClass('d-none')
+                $("#alerta0").addClass('d-none')
+            } else {
+                $("#alerta0").removeClass('d-none')
+                $("#alerta1").addClass('d-none')
+            }
+        });
+    
+    function myFunction() {
+            var x = document.getElementById("actual_usuario");
+            if (x.type === "password") {
+                x.type = "text";
+            } else {
+                x.type = "password";
+            }
+        }
+    
+    function myFunction1() {
+            var x = document.getElementById("nueva_usuario");
+            if (x.type === "password") {
+                x.type = "text";
+            } else {
+                x.type = "password";
+            }
+        }
+    
+    function myFunction2() {
+            var x = document.getElementById("repite_usuario");
+            if (x.type === "password") {
+                x.type = "text";
+            } else {
+                x.type = "password";
+            }
+        }
+    
+    
+</script>
+
+
+{% endblock body %}

@@ -1,0 +1,404 @@
+{% extends 'layout.html' %} {% block title %} Pagos-SISGEPA {% endblock %}
+
+{% block body %}
+{% with messages = get_flashed_messages(with_categories = true ) %} {% if messages %}
+{% for category, message in messages %}
+<div class="alert alert-{{ category }} alert-dismissible" role="alert">
+    {{ message }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endfor %} {% endif %}{% endwith %}
+
+{% if session['tipoUser'] == 2  %}
+<div class="container text-center w-100" >
+    <div class="display-4" style="font-size: 1.9rem;" id="ocultarcol">Generar Pago para {{nombreEmpleadorGenPago}}</div>
+    <hr>
+    <div class="row mt-4 w-100" id="ocultarcol">
+        <div class="col-12 w-100 text-center">
+            <div class="row text-center">
+                <div class="col-2 ">
+                    <label for="cantEmpl"><b>Cant. Empleados</b></label>
+                    <input type="text" class="form-control text-right" id="cantEmpl" value="1">
+                </div>
+                <div class="col-3">
+                    <label for="fechaLiq"><b>Fecha de Liquidacion</b></label>
+                    <div id="fechaLiq" class="row text-center ml-4 text-center">
+                        <select name="mesLiq" id="mesLiq" class="form-control w-auto">
+                            <option value="01">01</option>
+                            <option value="02">02</option>
+                            <option value="03">03</option>
+                            <option value="04">04</option>
+                            <option value="05">05</option>
+                            <option value="06">06</option>
+                            <option value="07">07</option>
+                            <option value="08">08</option>
+                            <option value="09">09</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                        </select>
+                        <p style="font-size: 1.5rem;" class="ml-1 mr-2"> / </p>
+                        <select name="anioLiq" id="anioLiq" class="form-control w-auto ">
+                            <option value="2020">2020</option>
+                            <option value="2021">2021</option>
+                            <option value="2022">2022</option>
+                            <option value="2023">2023</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                            <option value="2028">2028</option>
+                            <option value="2029">2029</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <label for="totalRem"><b>Total Remuneracion</b></label>
+                    
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><b>$</b></span>
+                        </div>
+                        <input type="number" min=0 class="form-control text-right" onClick="this.select();" id="totalRem" value='0'>
+                    </div>
+                    
+                </div>
+                <div class="col-2">
+                    <label for="otrosApor"><b>Otros Aportes </b></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><b>$</b></span>
+                        </div>
+                        <input type="number" min="0" class="form-control text-right" id="otrosApor" value='0'>
+                    </div>
+                
+                </div>
+                
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <label for="cuotaSind"><b>Cuota Sindical</b></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text "><b>$</b></span>
+                        </div>
+                        <input type="number" min="0" class="form-control text-right" id="cuotaSind" disabled>
+                    </div>
+
+                </div>
+                <div class="col-2">
+                    <label for="res1116"><b>Res. 11/16</b></label> 
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><b>$</b></span>
+                        </div>
+                        <input type="number" min="0" class="form-control text-right" id="res1116" disabled>
+                    </div>
+
+                </div>
+                
+                <div class="col-3">
+                    <label for="total"><b>Total</b></label> 
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><b>$</b></span>
+                        </div>
+                        <input type="number" min="0" class="form-control text-right" id="total" disabled>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row mt-4 w-100">
+                
+                
+                <button class="btn btn-primary w-auto m-auto " id="calcular" disabled>Calcular</button>
+                
+                <button class="btn btn-info w-auto m-auto" id="recalcular" disabled>Cambiar Valores</button>
+
+                <button class="btn btn-success w-auto m-auto " id="generarPago" disabled>Generar Pago</button>
+               
+            </div>
+        </div>
+    </div>
+
+    {%endif%}
+    <div class="row mt-4 w-100">
+        <div class="col-12 w-100 text-center">
+            <div class="display-4" style="font-size: 1.4rem;">Mis Pagos</div>
+            <br>
+                <input type="text" name="buscaEmpleador" id="buscaPago" placeholder="Filtre por el parametro que desee" class="form-control"
+                    maxlength="255">
+
+            <table class="table table-striped mt-4" id="tablaPago">
+                <thead>
+                    <tr>
+                        {% if session['tipoUser'] == 1 or session['tipoUser'] == 3 %}
+                        <th>Empleador</th>
+                        {%endif%}
+                        <th style="width: 8%"> Mes </th>
+                        <th id="ocultarcol">Empleados</th>
+                        <th>Total Remuneracion</th>
+                        <th id="ocultarcol">Cuota Sindical</th>
+                        <th id="ocultarcol">Res 11/16</th>
+                        <th id="ocultarcol">Otr. Apor.</th>
+                        <th>Total a Pagar</th>
+                        <th style="width: 15%"> Estado </th>
+                        {% if session['tipoUser'] ==2 %}
+                        <th id="ocultarcol">Informar</th>
+                        <th id="ocultarcol">Descargar</th>
+			            <th id="ocultarcol">Anular boleta</th>
+                        {%endif%}
+                        {% if session['tipoUser'] == 1 or session['tipoUser'] == 3 %}
+                        <th id="ocultarcol">Confirmar</th>
+                        <th id="ocultarcol">Ver Boleta</th>
+                        <th id="ocultarcol">Ver Pago</th>
+                        
+                        
+                        {%endif%}
+                        
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for boleta in boletasUsuario %}
+                    
+                    <tr>
+                        {% if session['tipoUser'] == 1 or session['tipoUser'] == 3 %}
+                        <td>{{boleta.7}}</td>
+                        {%endif%}
+                        <td > {{boleta.2.strftime('%m-%Y')}} </td>
+                        <td id="ocultarcol">{{boleta.5}}</td>
+                        {% if session['tipoUser'] == 1 or session['tipoUser'] == 3 %}
+                        <td>{{"${:,.2f}".format((boleta.4))}}</td>
+                        <td id="ocultarcol">{{"${:,.2f}".format((boleta.4)*15/1000)}}</td>
+                        <td id="ocultarcol">{{"${:,.2f}".format((boleta.4)*15/1000)}}</td>
+                        <td id="ocultarcol">{{"${:,.2f}".format((boleta.10))}}</td>
+                        <td>{{"${:,.2f}".format((boleta.4)*30/1000 + (boleta.10))}}</td>
+                        {%endif%}
+                        {% if session['tipoUser'] == 2 %}
+                        <td>{{"${:,.2f}".format((boleta.4))}}</td>
+                        <td id="ocultarcol">{{"${:,.2f}".format((boleta.4)*15/1000)}}</td>
+                        <td id="ocultarcol">{{"${:,.2f}".format((boleta.4)*15/1000)}}</td>
+                        <td id="ocultarcol">{{"${:,.2f}".format((boleta.7))}}</td>
+                        <td>{{"${:,.2f}".format((boleta.4)*30/1000 + (boleta.7))}}</td>
+                        {%endif%}
+                        {%if boleta.6==0 %} <td style="background-color: rgb(21, 128, 122); color:cornsilk;border-radius: 5%;">Generado </td>{%endif%}
+                        {%if boleta.6==1 %} <td style="background-color: brown; color:cornsilk;border-radius: 5%;">Anulado </td>{%endif%}
+                        {%if boleta.6==2 %} <td style="background-color: rgb(42, 54, 165); color:cornsilk;border-radius: 5%;">Informado </td>{%endif%}
+                        {%if boleta.6==3 %} <td style="background-color: rgb(8, 122, 33); color:cornsilk;border-radius: 5%;">Pagado </td>{%endif%}
+                    
+                        {% if session['tipoUser'] == 1 or session['tipoUser'] == 3 %}
+                            <td id="ocultarcol"><a href="/nuevoPago/{{boleta.0}}"><i class="fa fa-check" aria-hidden="true" style="font-size: 1.5rem;"></i></a></td>
+                            
+                            <td id="ocultarcol"><a href="/generaPdf/{{boleta.0}}"><i class="fa fa-arrow-down" aria-hidden="true" style="font-size: 1.5rem;"></i></a>
+                            </td>
+                            
+                            {%if boleta.9!=None %} <td id="ocultarcol"><a href="{{boleta.9}}" target="_blank"><i class="fa fa-usd" aria-hidden="true" style="font-size: 1.5rem;"></i></a></td>{%endif%}
+                        {%endif%}
+                        {% if session['tipoUser'] ==2 %}
+                            {% if boleta.6 == 0 %}
+                                <td id="ocultarcol"><a href="/nuevoPago/{{boleta.0}}"><i class="fa fa-envelope" aria-hidden="true" style="font-size: 1.5rem;"></i></a></td>
+                            {% else %}
+                                <td id="ocultarcol"><a href=""><i class="" aria-hidden="true" style="font-size: 1.5rem;" class ="disabledLink"></i></a></td>
+                            {%endif%}
+                            {% if boleta.6 != 1 %}                              
+                                <td id="ocultarcol"><a href="/generaPdf/{{boleta.0}}"><i class="fa fa-arrow-down" aria-hidden="true" style="font-size: 1.5rem;"></i></a></td>
+                            {%endif%}
+                            {% if boleta.6==0 %}                            
+                            <td id="ocultarcol"><a href="/anularBoleta/{{boleta.1}}/{{boleta.0}}" onclick="return confirm_anularBoleta()"><i class="fa fa-trash-o" aria-hidden="true" style="font-size: 1.5rem;"></i></a></td>                            
+                            {%endif%}
+                        {%endif%}
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Pago Generado-->
+<div class="modal fade" id="modalPagoGenerado" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Boleta Generada Exitosamente</h5>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body" id="datosBancarios">
+                        <h5>Abone su boleta por transferencia Bancaria 
+                            en las siguientes cuentas:</h5>
+                            <hr>
+                        <div class="row">
+                           <div class="col" style="border: gray 1px solid;">
+                               <h5><b>Banco de la Pcia de Córdoba </b><img src="../static/img/BANCOR.png" alt="" style="height:20px;"></h5>
+                                <h5>Razón Social:</h5><p>SIND.DEL PERS.DE LA IND.DE LA CARNE</p>
+                                <h5>CUIT:</h5><p>30643151487</p>
+                                <h5>N° Cuenta:</h5><p>30204001104</p>
+                                <h5>CBU:</h5><p>0200302101000004001147</p>
+                                <h5>Alias:</h5><p>AUTO.MESA.LODO</p>
+
+    
+                           </div>
+                           <div class="col" style="border: gray 1px solid;">
+                                <h5><b>Banco de la Nación Argentina </b><img src="../static/img/nacion.png" alt="" style="height:20px;"></h5>
+                                <h5>Razón Social:</h5>
+                                <p>SIND.DEL PERS.DE LA IND.DE LA CARNE</p>
+                                <h5>CUIT:</h5>
+                                <p>30643151487</p>
+                                <h5>N° Cuenta:</h5>
+                                <p>29304320079073</p>
+                                <h5>CBU:</h5>
+                                <p>0110432920043200790735</p>
+                                <h5>Alias:</h5>
+                                <p>sindicato2017</p>
+                           </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-info" id="cerrarModal">Cerrar</button>
+                </div>
+                <button class="btn btn-secondary" id="imprimir"><i class="fa fa-print" aria-hidden="true"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .bottom-aligned {
+    display: flex;
+    align-items: flex-end;
+}
+
+    @media (max-width: 600px) {
+        #ocultarcol {
+            display: none;
+        }
+    }
+</style>
+
+
+<script>
+
+  
+        $(document).ready(function () {
+            $("#buscaPago").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#tablaPago tbody tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+    });
+
+
+
+
+    $("#totalRem").change(()=>{
+        if(($("#totalRem").val())>0){
+           $("#calcular").removeAttr('disabled')
+        }else{
+             $("#calcular").attr('disabled')
+             alert('No es posible insertar un número negativo')
+        }
+    }) 
+
+    cuotaSind = '',
+    res1116 = '',
+    total = '',    
+
+    $("#calcular").click(function () {
+        $("#recalcular").removeAttr('disabled')
+        $("#totalRem").attr({'disabled':'disabled'})
+        $("#otrosApor").attr({'disabled':'disabled'})
+        $("#cantEmpl").attr({'disabled':'disabled'})
+        $("#anioLiq").attr({'disabled':'disabled'})
+        $("#mesLiq").attr({'disabled':'disabled'})
+        $("#generarPago").removeAttr('disabled')
+        totalRemuneracion=($("#totalRem").val())
+        otrosApor = ($("#otrosApor").val())
+        $.ajax({
+            url: 'calcularCuota',
+            type: 'post',
+            dataType: 'json', 
+            contentType: 'application/json',
+            data: JSON.stringify([{
+                "totalRemuneracion": totalRemuneracion,
+            }]),
+            success: function (data) {
+                if (data.Mensaje == 'Correcto') {
+                    cuotaSind=data.cuotaSind,
+                    res1116=data.res1116,
+                    total= Number(data.total)+Number(otrosApor),
+                    $("#res1116").attr({"value": res1116,'disabled':'disabled'})
+                    $("#cuotaSind").attr({ "value": cuotaSind, 'disabled': 'disabled' })
+                    $("#total").attr({ "value": total , 'disabled': 'disabled' })
+                    $("#otrosApor").attr({'disabled': 'disabled'})
+                }
+            }
+        });
+    })
+    //$("#otrosApor").change(()=>{ $("#total").attr({ "value": Number(total)+ Number($("#otrosApor").val()), 'disabled': 'disabled' })})
+
+        //Click En Generar Pago
+        $("#generarPago").click(()=>{
+            total = Number($("#totalRem").val())
+            mesLiq= $("#mesLiq").val()
+            anioLiq= $("#anioLiq").val()
+            fechaLiq=anioLiq+'-'+mesLiq+'-01'
+            cantEmpl= $("#cantEmpl").val()
+            otrosApor = $("#otrosApor").val()
+            $.ajax({
+                url: 'generarCuota',
+                type: 'post',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify([{
+                    "fechaLiq":fechaLiq,
+                    "cantEmpl":cantEmpl,
+                    "total": total,
+                    "otrosApor": otrosApor
+            
+                    
+                }]),
+                success: function (data) {
+                    if (data.Mensaje == 'Correcto') {
+                        $("#modalPagoGenerado").modal('show')
+                        $('#imprimir').click(()=>{
+                            $(".navbar").addClass('d-none')
+                            $("#hidePrint").addClass('d-none')
+                            print(document.getElementById("datosBancarios"))
+                        })
+                        $("#cerrarModal").click(()=>{
+                            location.reload()
+                        })
+                    }else{
+                        location.reload()
+                    }
+                }
+            }); 
+        })
+
+$("#recalcular").click(()=>{
+    $("#totalRem").removeAttr( 'disabled' )
+    $("#otrosApor").removeAttr('disabled')
+    $("#generarPago").attr({'disabled':'disabled'})
+    $("#res1116").attr({ "value": 0, 'disabled': 'disabled' })
+    $("#cuotaSind").attr({ "value": 0, 'disabled': 'disabled' })
+    $("#total").attr({ "value": 0, 'disabled': 'disabled' })
+    $("#otrosApor").val('0')
+    $("#totalRem").val('0')
+    $("#cantEmpl").removeAttr('disabled')
+    $("#mesLiq").removeAttr('disabled')
+    $("#anioLiq").removeAttr('disabled')
+})
+     
+
+//  VENTANAS DE CONFIRM
+function confirm_anularBoleta() {
+  return confirm('¿Estás seguro que deseas anular esta boleta? \n Deberás generar otra para el mismo período cuando desees informarla.');
+}
+
+</script>
+
+
+{% endblock body %}

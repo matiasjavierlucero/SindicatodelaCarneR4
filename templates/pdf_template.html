@@ -1,0 +1,144 @@
+{% block body %}
+<div class="row">
+    <div class="col-2">
+        <a href="/pagos" class="btn btn-info mt-4">Volver</a>
+    </div>
+    <div class="col-6">
+        <div class="row" id="aImprimir" style="border: black solid 1px;">
+            {%if data.10==3%}
+            <img src="../static/img/pagado.png" id="sello" alt="" style="position: absolute;z-index: -1;">
+            
+
+            {%endif%}
+            <img src="../static/img/carne-8.png" id="sellologo" alt="" style="position: absolute;z-index: -2;">
+            <div class="col m-0 p-0">
+                <h5 class="text-center m-0 p-0"  style="border: black solid 1px;">
+                    Sindicato del Personal de la Industria de la <br>
+                    Carne y sus Derivados de Rio Cuarto
+                </h5>
+                <h5 class="text-center m-0 p-0" style="border: black solid 1px; font-size: 15px;">Lavalle 992-Tel:0358-4649942-IVA EXENTO-CUIT: 30-64315148-7</h5>
+                <h5 class="text-center m-0 p-0" style="border: black solid 1px; font-size: 15px;">CTA N° 4320079073- SUC.2930-Convenio 5218-Rio Cuarto Cba</h5>
+                <div class="row text-center">
+                    <div class="col w-100">
+                        <p><b>Empleador:</b>{{empleador}}</p>
+                    </div>
+                    <div class="col w-100">
+                        <p><b>CUIT:</b>{{data.18}}
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="col">
+                        <p><b>Domicilio</b>{{data.16}}</p>
+                    </div>
+                    <div class="col">
+                        <p>{{data.17}}</p>
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="col">
+                    <table class="w-100">
+                        <tr>
+                            <th>Total Remuneración</th>
+                            <th>Mes Liquidado</th>
+                            <th>Cantidad de Empleados</th>
+                        </tr>
+                        <tr>
+                            <td align="right">{{data.6}}</td>
+                            <td align="right">{{data.4}}</td>
+                            <td align="right">{{data.9}}</td>
+                        </tr>
+                    </table>
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="col"></div>
+                    <div class="col justify-content-end" >
+                        <table class="table-sm justify-content-end w-100">
+                            <tr>
+                                <th>Cuota Sindical</th>
+                                <td align="right"> {{"${:,.2f}".format(data.6/1000*15)}}</td>
+                            </tr>
+                            <tr>
+                                <th>Resolucion 11/16</th>
+                                <td align="right"> {{"${:,.2f}".format(data.6/1000*15)}}</td>
+                            </tr>
+                            <tr>
+                                <th>Otros Aportes</td>
+                                <td align="right"> {{"${:,.2f}".format(data.8)}}</td>
+                            </tr>
+                            <tr>
+                                <th>TOTAL</td>
+                                <td align="right"><b> {{"${:,.2f}".format(data.8+(data.6*30/1000))}}</b></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="col">
+                        <br>
+                        <h5>Boleta Numero {{boleta}}</script></h5>
+                        <br>
+                        <h5>Boleta Generada el {{data.5.strftime('%d-%m-%Y')}}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="btn btn-success text-center mt-4" id="descargar" style="margin-left: 45%;"> Descargar <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i> </div>
+    </div>
+</div>
+
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"
+    integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
+
+{% endblock %}
+<!-- jsPDF library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+
+<!-- jsPDF Bootstrap-->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+
+
+
+<script>
+
+    $("#descargar").click(() => {
+        html2canvas(document.getElementById("aImprimir"), {
+            onrendered: function (canvas) {
+                var img = canvas.toDataURL('image/png', 1.0); //image data of canvas
+                var doc = new jsPDF("p",  "pt" ,"A4");
+                ancho = 300;
+                alto = ancho*0.64;
+                doc.addImage(img, 'JPEG',10,10,ancho,alto, undefined, 'FAST');
+                doc.save('{{usuario}}_{{periodo}}_{{boleta}}.pdf');
+            }
+        });
+    })
+
+</script>
+
+
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid black;
+    }
+    #sello{
+        margin-top: 210px;
+        width: 250px;
+    }
+    #sellologo{
+        margin-top: 210px;
+        width: 380px;
+    }
+</style>

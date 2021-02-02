@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-174548241-3"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-174548241-3');
+	</script>
+
+    <title>{% block title %} {% endblock %}</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- FontAwesome CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <!-- hoja de estilos propia -->
+    <link rel="stylesheet" type="text/css" href="/static/styles.css" />
+    <link rel="icon" type="image/png" href="/static/img/vaca.png"/>
+
+</head>
+<!--  -->
+
+<body style="background: #CCCCFF">
+    <img id="fondo" src="/static/img/COMISION.jpg" class="imgfondo d-none"
+        style="position: absolute;opacity: 0.20;width: 100%;" alt="">
+    <nav class="navbar navbar-expand-lg fixed-top" style="position: relative;background-color:  rgb(5, 41, 77);">
+        <a class="navbar-brand" href="/"><img src="../static/img/logo.png" alt="" style="height: 40px;"></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="color:white">
+            <span class="navbar-toggler-icon"><i class="fa fa-bars" aria-hidden="true"></i></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <!--BLOQUE PRINCIPAL NAVBAR-->
+            {% if session['nombUser'] %} {% if session['tipoUser'] == 1 or session['tipoUser'] == 3 %}
+            <!-- Aca filtramos p mostrar elementos para admin(1) y secre(3) -->
+            <a class="nav-item nav-link active" href="/">Inicio <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link" href="/empleadores">Empleadores</a>
+            <a class="nav-item nav-link" href="/pagos">Pagos</a>
+            <a class="nav-item nav-link" href="/filter">Estadisticas</a>
+
+            {% elif session['tipoUser'] == 2 %}
+            <!-- aca elegimos que mostrarle al empleador(2) en el navbar  -->
+            <a class="nav-item nav-link active" href="/">Inicio <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link" href="/pagos">Pagos</a>
+
+            {% endif %} {% endif %}
+
+        </div>
+        <ul class="navbar-nav">
+            {% if session['nombUser'] %}
+            <!-- esto es en el caso de q este logueado,cualquiera, y le muestre la opc perfil y salir -->
+            <li class="nav-item justify-content-end">
+                <form class="form-inline my-2 my-lg-0">
+                    <!--BLOQUE DE LOG OUT y PROFILE-->
+                    <a class="btn btn-info mr-2" href="/miperfil"><i class="fa fa-user" aria-hidden="true"></i>
+                        Perfil,{{session['nombUser'][0]}}</a>
+                    <a class="btn btn-danger " href="/logout">Salir</a>
+                </form>
+            </li>
+            {% else %}
+            <!-- y x ultimo, si no esta lugueado, solo se le muestra el ingresar -->
+            <li class="nav-item justify-content-end">
+                <!--BLOQUE DE LOG IN y PROFILE-->
+                <a class="btn btn-info" href="/login" id="btnIngresar">Ingresar</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+
+    <div class="container h-100 w-100">
+        {% block body %} {% endblock %}
+
+    </div>
+
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <!-- FOOTER -->
+
+
+</body>
+<div class="wrapper">
+
+    <footer class='footer'>
+        <div class="containerFooter ">
+            <div class="row justify-content-between" style="width: 100%;height: auto;">
+                <div class="col-lg-4 col-md-2 col-sm-12 col-xs-12 text-center">
+                    <h5 id="titulologo" class="mt-0 mb-0">Sindicato de la Carne Rio Cuarto</h5>
+                    <p class="mt-0 mb-0">Lavalle 992, esq.Bolivar</p>
+                    <p class="mt-0 mb-0">Rio Cuarto - Cordoba</p>
+                    <p class="mt-0 mb-0">0358-4649-942</p>
+                    <p class="mt-0 mb-0">sin.dela.carnerioiv@hotmail.com</p>
+                </div>
+                <div class="col-lg-4 col-md-2 col-sm-12 col-xs-12 text-center">
+                    <img src="../static/img/logo.png" alt="logo sindicato" id="imagenlogo" style="height: 120px;">
+                    <div class="display-4 aling-item-center" style="font-size: 1.3rem;"><i>Fabio Oviedo Conducción</i>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-2 col-sm-12 col-xs-12 justify-content-center">
+                    <div class="text-center">
+                        <a href="https://www.itecriocuarto.org.ar/">
+                            <h5 class="copyright display-4" style="color:rgb(255, 255, 255); font-size: 1.3rem;">
+                                Desarrollado por</h5>
+                            <img src="../static/img/Logoiteclabs.png" style="height:120px;" alt="logo itec labs">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+<style>
+    .nav-item {
+        color: mistyrose;
+    }
+
+
+    html {
+        position: relative;
+        min-height: 100%;
+
+    }
+
+    body {
+        /* Margin bottom by footer height */
+        margin-bottom: 60px;
+        height: 100%;
+
+    }
+
+    footer {
+
+        padding-top: 2px;
+        width: 100%;
+        height: 210px;
+
+
+    }
+
+    .footer,
+    .push {
+        height: 155px;
+        /* .push must be the same height as .footer */
+    }
+
+    .containerFooter {
+
+        margin-top: 60px;
+        background-color: #f5f5f5;
+        padding-top: 3px;
+        width: 100%;
+        height: 205px;
+        background-color: rgb(5, 41, 77);
+        color: white;
+    }
+
+    .navbar-collapse {
+        border-color: blanchedalmond;
+    }
+
+    /* .wrapper {
+    height:auto !important;
+    min-height: 100%;
+    margin: 0 auto -155px; 
+} */
+
+    @media (max-width: 600px) {
+        footer {
+
+            padding-top: 2px;
+            width: 100%;
+            height: auto;
+
+
+        }
+
+        .footer,
+        .push {
+            height: auto;
+            /* .push must be the same height as .footer */
+        }
+
+        .containerFooter {
+
+            
+            background-color: #f5f5f5;
+            padding-top: 3px;
+            width: 100%;
+            height: auto;
+            background-color: rgb(5, 41, 77);
+            color: white;
+        }
+        #imagenlogo{
+            
+            height: 50px;
+            box-sizing:border-box;
+        }
+        #imgfondo{
+            display: none;
+        }
+    }
+</style>
+
+</html>

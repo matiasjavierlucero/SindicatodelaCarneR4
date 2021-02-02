@@ -1,0 +1,155 @@
+{% extends 'layout.html' %} {% block title %} Pagos-SISGEPA {% endblock %}
+
+{% block body %}
+
+
+{% if session['tipoUser'] == 1 or session['tipoUser'] == 3 %}
+<div class="container w-100 text-center">
+    <br>
+    <h5>Resultado de su búsqueda según los siguientes criterios:</h5>
+    <br>
+    <div class="row w-100 p-1" style="background-color: rgba(95, 158, 160, 0.363);">
+        
+        <div class="col">
+            <h5>Empleador:</h5><p>{{Nombre}}</p>
+            <h5>Estado de la Boleta:</h5>
+            
+            {%if Estado=='99' %}<p>Todas</p>{%endif%}
+            {%if Estado=='1' %}<p>Anulada</p>{%endif%}
+            {%if Estado=='0'%}<p>Generada</p>{%endif%}
+            {%if Estado=='2' %}<p>Pendiente</p>{%endif%}
+            {%if Estado=='3' %}<p>Confirmada</p>{%endif%}
+        </div>
+        <div class="col">
+            <h5>Liquidación Desde:</h5>
+            <p>{{DesdeLiq}}</p>
+            <h5>Liquidación Hasta:</h5>
+            <p>{{HastaLiq}}</p>
+        </div>
+        <div class="col">
+            <h5>Movimiento Desde:</h5>
+            <p>{{Desde}}</p>
+            <h5>Movimiento Hasta:</h5>
+            <p>{{Hasta}}</p>
+        </div>
+        <div class="col">
+            <h5>Pago Desde:</h5>
+            <p>{{DesdePago}}</p>
+            <h5>Pago Hasta:</h5>
+            <p>{{HastaPago}}</p>
+        </div>
+
+    </div>
+    </div>
+    <div class="row w-100">
+        <div class="col w-100 text-center">
+            <br><br>
+            <table class="table table-sm  table-striped w-100" id="ejemplo">
+                <thead>
+                    <tr>
+                        <th id="ocultarcol">Empleador</th>
+                        <th>Mes Liquidado</th>
+                        <th>Fecha de Liquidación</th>
+                        <th>Fecha de Pago</th>
+
+                        <th id="ocultarcol">Cantidad de Empleados</th>
+                        <th id="ocultarcol">Cuota Sindical</th>
+                        <th id="ocultarcol">Res. 11/16</th>
+                        <th id="ocultarcol">Otros Aportes</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for datos in datos%}
+                    <tr>
+                        <td id="ocultarcol">{{datos.15}}</td>
+                        <td>{{datos.4.strftime('%m-%Y')}}</td>
+                        <td>{{datos.5.strftime('%d-%m-%Y')}}</td>
+                        {%if datos.7!=None%}<td>{{datos.7.strftime('%d-%m-%Y')}}</td>{%endif%}
+                        {%if datos.7==None%}<td>Adeudada</td>{%endif%}
+
+                        <td id="ocultarcol">{{datos.9}}</td>
+                        <td id="ocultarcol" class="d-none">{{(datos.6*15/1000)}}</td>
+                        <td id="ocultarcol" class="d-none">{{(datos.6*15/1000)}}</td>
+                        <td id="ocultarcol" class="d-none">{{(datos.8)}}</td>
+                        <td id="ocultarcol" class="d-none">{{(datos.8+(datos.6*30/1000))}}</td>
+                        <td id="ocultarcol">{{"${:,.2f}".format(datos.6*15/1000)}}</td>
+                        <td id="ocultarcol">{{"${:,.2f}".format(datos.6*15/1000)}}</td>
+                        <td id="ocultarcol">{{"${:,.2f}".format(datos.8)}}</td>
+                        <td>{{"${:,.2f}".format(datos.8+(datos.6*30/1000))}}</td>
+                        {%if datos.10==1%}<td>Anulada</td>{%endif%}
+                        {%if datos.10==0%}<td>Generada</td>{%endif%}
+                        {%if datos.10==2%}<td>Pendiente</td>{%endif%}
+                        {%if datos.10==3%}<td>Confirmada</td>{%endif%}
+                    </tr>
+                    {%endfor%}
+                </tbody>
+                <hr>
+                <tfoot>
+                    <td><b>Totales</b></td>
+                    <td></td>
+                    <td id="ocultarcol"></td>
+                    <td id="ocultarcol"></td>
+                    <td id="ocultarcol"></td>
+                    <td id="ocultarcol" class="t0"></td>
+                    <td id="ocultarcol" class="t1"></td>
+                    <td id="ocultarcol" class="t2"></td>
+                    <td  class="t3"></td>
+                    <td ></td>
+                    <td></td>
+                </tfoot>
+                </table>
+            </table>
+        <button class="btn btn-secondary" onclick="imprimir()">Imprimir</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    $(document).ready(function () {
+            sumarTbody();
+        });
+
+        function sumarTbody() {
+            var t0 = 0, t1 = 0, t2 = 0, t3 = 0;
+            $("#ejemplo tr").each(function (ind, ele) {//recorre tr's
+                $("td", ele).each(function (i, e) {//recorre td's            
+                    if (i == 5) t0 += Number($(e).html());
+                    if (i == 6) t1 += Number($(e).html());
+                    if (i == 7) t2 += Number($(e).html());
+                    if (i == 8) t3 += Number($(e).html());
+                
+                })
+            })
+            $(".t0").html('<b>$' + t0.toFixed(2) + '</b>')
+            $(".t1").html('<b>$' + t1.toFixed(2) + '</b>')
+            $(".t2").html('<b>$' + t2.toFixed(2) + '</b>')
+            $(".t3").html('<b>$' + t3.toFixed(2) + '</b>')
+            
+
+        }
+
+
+    function imprimir(){
+        $(".nav").addClass('d-none')
+        print()
+        $(".nav").removeClass('d-none')
+    }
+</script>
+
+<style>
+    @media (max-width: 600px) {
+    #ocultarcol {
+      display: none;
+    }
+    .t3{
+        margin-left: 0px;
+    }
+  }
+</style>
+
+
+{% endif %}
+{% endblock body %}

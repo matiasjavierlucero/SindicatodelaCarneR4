@@ -1,0 +1,401 @@
+{% extends 'layout.html' %} {% block title %} Pagos {{nombreEmpleador}} -SISGEPA {% endblock %}
+
+{% block body %}
+{% with messages = get_flashed_messages(with_categories = true ) %} {% if messages %}
+{% for category, message in messages %}
+<div class="alert alert-{{ category }} alert-dismissible" role="alert">
+    {{ message }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endfor %} {% endif %}{% endwith %}
+<!-- Empleador Genera Boleta -->
+<div class="container text-center w-100" id="hidePrint" id="ocultarcol">
+    <div class="display-4" style="font-size: 1.9rem;">Generar Pago para {{nombreEmpleador}}</div>
+    <hr>
+    <div class="row mt-4 w-100">
+        <div class="col-12 w-100 text-center">
+            <div class="row text-center">
+                <div class="col-2 ">
+                    <label for="cantEmpl"><b>Cant. Empleados</b></label>
+                    <input type="text" class="form-control text-right" id="cantEmpl" value="1">
+                </div>
+                <div class="col-3">
+                    <label for="fechaLiq"><b>Fecha de Liquidacion</b></label>
+                    <div id="fechaLiq" class="row text-center ml-4 text-center">
+                        <select name="mesLiq" id="mesLiq" class="form-control w-auto">
+                            <option value="01">01</option>
+                            <option value="02">02</option>
+                            <option value="03">03</option>
+                            <option value="04">04</option>
+                            <option value="05">05</option>
+                            <option value="06">06</option>
+                            <option value="07">07</option>
+                            <option value="08">08</option>
+                            <option value="09">09</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                        </select>
+                        <p style="font-size: 1.5rem;" class="ml-1 mr-2"> / </p>
+                        <select name="anioLiq" id="anioLiq" class="form-control w-auto ">
+                            <option value="2020">2020</option>
+                            <option value="2021">2021</option>
+                            <option value="2022">2022</option>
+                            <option value="2023">2023</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                            <option value="2028">2028</option>
+                            <option value="2029">2029</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <label for="totalRem"><b>Total Remuneracion</b></label>
+
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><b>$</b></span>
+                        </div>
+                        <input type="number" min=0 class="form-control text-right" onClick="this.select();"
+                            id="totalRem" value='0'>
+                    </div>
+
+                </div>
+                <div class="col-2">
+                    <label for="otrosApor"><b>Otros Aportes </b></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><b>$</b></span>
+                        </div>
+                        <input type="number" min="0" class="form-control text-right" id="otrosApor">
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <label for="cuotaSind"><b>Cuota Sindical</b></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text "><b>$</b></span>
+                        </div>
+                        <input type="number" min="0" class="form-control text-right" id="cuotaSind" disabled>
+                    </div>
+
+                </div>
+                <div class="col-2">
+                    <label for="res1116"><b>Res. 11/16</b></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><b>$</b></span>
+                        </div>
+                        <input type="number" min="0" class="form-control text-right" id="res1116" disabled>
+                    </div>
+
+                </div>
+
+                <div class="col-3">
+                    <label for="total"><b>Total</b></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><b>$</b></span>
+                        </div>
+                        <input type="number" min="0" class="form-control text-right" id="total" disabled>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row mt-4 w-100">
+
+
+                <button class="btn btn-primary w-auto m-auto " id="calcular" disabled>Calcular</button>
+
+                <button class="btn btn-info w-auto m-auto" id="recalcular" disabled>Cambiar Valores</button>
+
+                <button class="btn btn-success w-auto m-auto " id="generarPago" disabled>Generar Pago</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<div class="row">
+    <div class="col text-center">
+        <div class="display-4 mt-4" style="font-size: 1.5rem;">Historial de Pagos de {{nombreEmpleador}}</div>
+    </div>
+    <hr>
+</div>
+<div class="row  justify-content-start">
+    <div class="col-3 justify-content-start">
+        <a href="/empleadores"><div class="btn btn-success">Atras <i class="fa fa-arrow-left" aria-hidden="true"></i></div></a>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col w-100-text-center">
+    <input type="text" name="buscaPago" id="buscaPago" placeholder="Buscar Pago" class="form-control"
+        maxlength="255">
+
+    <table class="table-xs table-striped table-hover w-100 text-center" id="tablaPago">
+        <thead>
+            <tr>
+                <th id="ocultarcol">Boleta</th>
+                <th >Mes Liquidado</th>
+                <th id="ocultarcol">Fecha Liquidacion</th>
+                <th id="ocultarcol">Empleados</th>
+                <th >Remuneracion</th>
+                <th id="ocultarcol">Cuota Sindical</th>
+                <th id="ocultarcol">Res. 11/16</th>
+                <th id="ocultarcol">Ot.Apor</th>
+                <th>Total</th>
+                <th >Estado</th>
+
+
+            </tr>
+        </thead>
+        <tbody>
+            {%for pag in pagosEmpleador%}
+                <!-- Defino el color de la fila segun el estado del pago -->
+                {% if pag.10 ==1 %}<tr id="filapago" class="bg-danger" style="color:white">{%endif%}
+                {% if pag.10 ==0 %}<tr id="filapago" class="bg-secondary" style="color:white">{%endif%}
+                {% if pag.10 ==2 %}<tr id="filapago" class="bg-info" style="color:white">{%endif%}
+                {% if pag.10 ==3 %}<tr id="filapago" class="bg-success" style="color:white">{%endif%}
+                <td id="ocultarcol">{{pag.0}}</td>
+                <td>{{pag.4.strftime('%m-%Y')}}</td>
+                <td id="ocultarcol">{{pag.5.strftime('%d-%m-%Y')}}</td>
+                <td id="ocultarcol">{{pag.9}}</td>
+                <td>{{"${:,.2f}".format(pag.6)}}</td>
+                <td id="ocultarcol">{{"${:,.2f}".format(pag.6*15/1000)}}</td>
+                <td id="ocultarcol">{{"${:,.2f}".format(pag.6*15/1000)}}</td>
+                <td id="ocultarcol">{{"${:,.2f}".format(pag.8)}}</td>
+                <td>{{"${:,.2f}".format((pag.6*30/1000)+(pag.8))}}</td>
+                <form action="/estadoboleta/{{pag.0}}" method="POST">
+                <!-- Segun el estado de la boleta defino el orden de las opciones -->
+                    <td>
+                        <select name="estado" class="form-control estboleta" id="estado_boleta">
+                        {% if pag.10 ==1 %}
+                            <option value="1">Anulada</option>
+                            <option value="0">Generada</option>
+                            <option value="2">Informada</option>
+                            <option value="3">Pago confirmado</option>
+                            {%endif%}
+                            {% if pag.10 ==0 %}                    
+                            <option value="0">Generada</option>
+                            <option value="2">Informada</option>
+                            <option value="3">Pago confirmado</option>
+                            <option value="1">Anulada</option>
+                            {%endif%}
+                            {% if pag.10 ==2 %}
+                            <option value="2">Informada</option>
+                            <option value="0">Generada</option>
+                            <option value="3">Pago confirmado</option>
+                            <option value="1">Anulada</option>
+
+                            {%endif%}
+                            {% if pag.10 ==3 %}
+                            <option value="3">Pago confirmado</option>
+                            <option value="1">Anulada</option>
+                            <option value="0">Generada</option>
+                            <option value="2">Informada</option>
+                            {%endif%}
+                        </select>
+                    </td>
+                    <td>
+                        <button type='submit' class="btn btn-success">Guardar</button>
+                    </td>
+                </form>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
+
+<!-- MODAL CAMBIO DE ESTADO BOLETA -->
+<div class="modal fade" id="ModalEstado" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Estado del Pago</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+                <label for="estado">Seleccione Un Estado</label>
+                <select name="estado" id="estado">
+
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Pago Generado-->
+<div class="modal fade" id="modalPagoGenerado" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+    aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Mensaje</h5>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body" id="datosBancarios">
+                        
+                        <hr>
+                        <div class="row">
+                            <div class="col" style="border: gray 1px solid;">
+                                <h5>Boleta Generada Con Exito</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-info" id="cerrarModal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    id_emp="{{id_emp}}"
+
+    $(document).ready(function () {
+        $("#buscaPago").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#tablaPago tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+
+    
+        $("#totalRem").change(() => {
+            if (($("#totalRem").val()) > 0) {
+                $("#calcular").removeAttr('disabled')
+            } else {
+                $("#calcular").attr('disabled')
+                alert('No es posible insertar un número negativo')
+            }
+        })
+
+        cuotaSind = '',
+            res1116 = '',
+            total = '',
+
+            $("#calcular").click(function () {
+                $("#recalcular").removeAttr('disabled')
+                $("#totalRem").attr({ 'disabled': 'disabled' })
+                $("#otrosApor").attr({ 'disabled': 'disabled' })
+                $("#cantEmpl").attr({ 'disabled': 'disabled' })
+                $("#anioLiq").attr({ 'disabled': 'disabled' })
+                $("#mesLiq").attr({ 'disabled': 'disabled' })
+                $("#generarPago").removeAttr('disabled')
+                totalRemuneracion = ($("#totalRem").val())
+                otrosApor = ($("#otrosApor").val())
+                $.ajax({
+                    url: '/calcularCuota',
+                    type: 'post',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify([{
+                        "totalRemuneracion": totalRemuneracion,
+                    }]),
+                    success: function (data) {
+                        if (data.Mensaje == 'Correcto') {
+                            cuotaSind = data.cuotaSind,
+                                res1116 = data.res1116,
+                                total = Number(data.total) + Number(otrosApor),
+                                console.log(cuotaSind, res1116, total)
+                            $("#res1116").attr({ "value": res1116, 'disabled': 'disabled' })
+                            $("#cuotaSind").attr({ "value": cuotaSind, 'disabled': 'disabled' })
+                            $("#total").attr({ "value": total, 'disabled': 'disabled' })
+                            $("#otrosApor").attr({ 'disabled': 'disabled' })
+                        }
+                    }
+                });
+            })
+        //$("#otrosApor").change(()=>{ $("#total").attr({ "value": Number(total)+ Number($("#otrosApor").val()), 'disabled': 'disabled' })})
+
+        //Click En Generar Pago
+        $("#generarPago").click(() => {
+                total = Number($("#totalRem").val())
+                mesLiq = $("#mesLiq").val()
+                anioLiq = $("#anioLiq").val()
+                fechaLiq = anioLiq + '-' + mesLiq + '-01'
+                cantEmpl = $("#cantEmpl").val()
+                otrosApor = $("#otrosApor").val()
+
+                $.ajax({
+                    url: '/generarCuotaEmpleador',
+                    type: 'post',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify([{
+                        "fechaLiq": fechaLiq,
+                        "cantEmpl": cantEmpl,
+                        "total": total,
+                        "id_emp": id_emp,
+                        "otrosApor": otrosApor
+
+                    }]),
+                success: function (data) {
+                    if (data.Mensaje == 'Correcto') {
+                        $("#modalPagoGenerado").modal('show')
+                        $('#imprimir').click(() => {
+                            $(".navbar").addClass('d-none')
+                            $("#hidePrint").addClass('d-none')
+                            print(document.getElementById("datosBancarios"))
+                        })
+                        $("#cerrarModal").click(() => {
+                            location.reload()
+                        })
+                    } else {
+                        location.reload()
+                    }
+                }
+            });
+        })
+
+        $("#recalcular").click(() => {
+            $("#totalRem").removeAttr('disabled')
+            $("#otrosApor").removeAttr('disabled')
+            $("#generarPago").attr({ 'disabled': 'disabled' })
+            $("#res1116").attr({ "value": 0, 'disabled': 'disabled' })
+            $("#cuotaSind").attr({ "value": 0, 'disabled': 'disabled' })
+            $("#total").attr({ "value": 0, 'disabled': 'disabled' })
+            $("#otrosApor").val('0')
+            $("#totalRem").val('0')
+        })
+
+
+
+
+</script>
+
+<style>
+    @media (max-width: 600px) {
+        #ocultarcol {
+            display: none;
+        }
+        #hidePrint {
+            display: none;
+        }
+    }
+</style>
+
+{% endblock body %}

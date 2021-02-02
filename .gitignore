@@ -1,0 +1,20 @@
+#vs shits
+/.vscode
+#python
+/__pycache__/
+__pycache__
+__pycache__/
+archivosSubidos/
+/archivosSubidos
+/archivosSubidos/
+
+#venv
+/sindiCarneVENV/
+sindiCarneVENV
+sindiCarneVENV/
+#modules?
+
+#LOGS
+logs
+logs/
+*.log

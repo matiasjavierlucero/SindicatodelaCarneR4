@@ -1,0 +1,40 @@
+{% extends 'layout.html' %} {% block title %}Inicio -SISGEPA {% endblock %}
+
+{% block body %}
+
+    {% with messages = get_flashed_messages(with_categories = true ) %} {% if messages %} {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+{% endfor %} {% endif %} {% endwith %} <!-- Todos estos 'ends' son de los for,if,with del bloque que maneja los flash -->
+
+<div class="row">
+  <div class="col text-center">
+      <div class="container text-center m-auto">
+        <div class="row mt-5">
+          <div class="col  text-center">
+            <div class="display-4" style="font-size: 2.3rem;">
+              ¡Bienvenido! <br><br>
+              {{nombreUsuario}}
+            </div>
+      
+          </div>
+        </div>
+      </div>
+      <div class="espacio"> </div>
+  </div>
+</div>
+<script>
+  $("#fondo").removeClass('d-none')
+</script>
+<style>
+  .espacio {
+            height: 950px;
+        }
+</style>
+{% endblock %}
+<!-- FIN DEL BLOQUE QUE MUESTRA EL CONTENIDO DEL TEMPLATE -->

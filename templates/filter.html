@@ -1,0 +1,167 @@
+{% extends 'layout.html' %} {% block title %} Pagos-SISGEPA {% endblock %}
+
+{% block body %}
+
+
+{% if session['tipoUser'] == 1 or session['tipoUser'] == 3 %}
+<div class="row">
+    <div class="col-4"></div>
+    <div class="col-4 text-center">
+        <div class="row mt-4 text-center">
+            <div class="col text-center">
+
+                <div class="display-4" style="font-size: 1.5rem;">
+                    Seleccione sus parámetros
+                </div>
+            </div>
+            <div class="row mt-4 text-center">
+                <div class="col text-center">
+                    <form action="/filtropersonalizado" method="post">
+                        <label for="Empleador">Empleador</label>
+                        <select name="Empleador" class="form-control" id="empleador">
+                            <option value="0">Todos</option>
+                            {%for emp in empleador%}
+                            <option value={{emp.0}}>{{emp.1}}</option>
+                            {%endfor%}
+                        </select>
+                        <label for="desde">Fecha de Operación Desde</label>
+                        <input type="date" name="Desde" id="desde" class="form-control">
+                        <label for="hasta">Fecha de Operación Hasta</label>
+                        <input type="date" name="Hasta" id="hasta" class="form-control">
+                        <div class="row ml-2">
+                            <div class="col">
+                                <label for="fechaLiqDesde">Fecha de Liquidacion Desde</label>
+                                <div id="fechaLiqDesde" class="row text-center">
+                                    <select name="mesLiqDesde" id="mesLiq" class="form-control w-auto">
+                                        <option value="00">-</option>
+                                        <option value="01">01</option>
+                                        <option value="02">02</option>
+                                        <option value="03">03</option>
+                                        <option value="04">04</option>
+                                        <option value="05">05</option>
+                                        <option value="06">06</option>
+                                        <option value="07">07</option>
+                                        <option value="08">08</option>
+                                        <option value="09">09</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                    </select>
+                                    <p style="font-size: 1.5rem;" class="ml-1 mr-2"> / </p>
+                                    <select name="anioLiqDesde" id="anioLiq" class="form-control w-auto ">
+                                    <option value="00">-</option>
+                                    <option value="2010">2010</option>
+                                    <option value="2011">2011</option>
+                                    <option value="2012">2012</option>
+                                    <option value="2013">2013</option>
+                                    <option value="2014">2014</option>
+                                    <option value="2015">2015</option>
+                                    <option value="2016">2016</option>
+                                    <option value="2017">2017</option>
+                                    <option value="2018">2018</option>
+                                    <option value="2019">2019</option>
+                                    <option value="2020">2020</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2025">2025</option>
+                                    <option value="2026">2026</option>
+                                    <option value="2027">2027</option>
+                                    <option value="2028">2028</option>
+                                    <option value="2029">2029</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="col">
+                                <label for="fechaLiqHasta">Fecha de Liquidacion Hasta</label>
+                                <div id="fechaLiqHasta" class="row text-center ">
+                                    <select name="mesLiqHasta" id="mesLiq" class="form-control w-auto">
+
+                                        <option value="00">-</option>
+                                        <option value="01">01</option>
+                                        <option value="02">02</option>
+                                        <option value="03">03</option>
+                                        <option value="04">04</option>
+                                        <option value="05">05</option>
+                                        <option value="06">06</option>
+                                        <option value="07">07</option>
+                                        <option value="08">08</option>
+                                        <option value="09">09</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                    </select>
+                                    <p style="font-size: 1.5rem;" class="ml-1 mr-2"> / </p>
+                                    <select name="anioLiqHasta" id="anioLiq" class="form-control w-auto ">
+                                        <option value="00">-</option>
+                                        <option value="2010">2010</option>
+                                        <option value="2011">2011</option>
+                                        <option value="2012">2012</option>
+                                        <option value="2013">2013</option>
+                                        <option value="2014">2014</option>
+                                        <option value="2015">2015</option>
+                                        <option value="2016">2016</option>
+                                        <option value="2017">2017</option>
+                                        <option value="2018">2018</option>
+                                        <option value="2019">2019</option>
+                                        <option value="2020">2020</option>
+                                        <option value="2021">2021</option>
+                                        <option value="2022">2022</option>
+                                        <option value="2023">2023</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2025">2025</option>
+                                        <option value="2026">2026</option>
+                                        <option value="2027">2027</option>
+                                        <option value="2028">2028</option>
+                                        <option value="2029">2029</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <label for="Estado">Estado de Boleta</label>
+                        <select name="Estado" id="estado" class="form-control">
+                            <option value="99">Todas</option>
+                            <option value="0">Generada</option>
+                            <option value="1">Anulada</option>
+                            <option value="2">Pendiente de Confirmacion</option>
+                            <option value="3">Abonada</option>
+                        </select>
+                        <br>
+                        <label for="desdePago" class="Pago d-none">Fecha de Pago Desde</label>
+                        <input type="date" name="DesdePago" id="desdePago" class="form-control Pago d-none">
+                        <label for="hastaPago" class="Pago d-none">Fecha de Pago Hasta</label>
+                        <input type="date" name="HastaPago" id="hastaPago" class="form-control Pago d-none">
+                        <br>
+                        <a href="/" class="btn btn-danger">Atras</a>
+                        <button type="submit" class="btn btn-success">Consultar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-4"></div>
+</div>
+
+<style>
+    #fechaLiqHasta {
+        text-align: center;
+    }
+</style>
+
+<script>
+    $("#estado").change(()=>{
+        if ($("#estado").val()=='3'){
+            $(".Pago").removeClass('d-none')
+        }else{
+            $(".Pago").addClass('d-none')
+        }
+    })
+</script>
+
+
+{% endif %}
+{% endblock body %}

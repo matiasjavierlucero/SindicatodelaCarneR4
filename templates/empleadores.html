@@ -1,0 +1,174 @@
+{% extends 'layout.html' %} {% block title %} Empleadores-SISGEPA {% endblock %}
+
+
+{% block body %}
+{% with messages = get_flashed_messages(with_categories = true ) %} {% if messages %}
+{% for category, message in messages %}
+<div class="alert alert-{{ category }} alert-dismissible" role="alert">
+    {{ message }}
+    <button type="button" class="close" data-dismiss="alert" aria-h5="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endfor %} {% endif %}{% endwith %}
+
+
+{% if session['tipoUser'] == 1 or session['tipoUser'] == 3 %} <!-- aca limito a que SOLO admin y secre accedan a esta seccion-->
+
+<div class="row">
+    <div class="col text-center">
+        <div class="display-4">Listado de Empleadores</div>
+    </div>
+    <hr>
+</div>
+<div class="row  justify-content-end">
+    <div class="col-3 justify-content-end">
+        <div class="btn btn-primary" data-toggle="modal" data-target="#modalNueEmpl">
+            Nuevo Empleador <i class="fa fa-plus-circle" aria-hidden="true"></i>
+        </div>
+    </div>
+</div>
+<br>
+<div class="row">
+    <col class="w-100-text-center">
+    <input type="text" name="buscaEmpleador" id="buscaEmpleador" placeholder="Buscar Empleador" class="form-control"
+        maxlength="255">
+
+    <table class="table-xs table-striped table-hover w-100" id="tablaEmpleadores">
+        <thead>
+            <tr>
+                <th style="width: 20%;">Empleador</th>
+                <th style="width: 15%;">CUIT</th>
+                <th style="width: 20%;">Domicilio</th>
+                <th style="width: 13%;">Localidad</th>
+                <th style="width: 8%;">Telefono</th>
+                <th style="width: 16%;">Email</th>
+                <th style="width: 3%;">Pagos</th>
+                <th style="width: 3%;">Editar</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {%for emp in listaEmpleadores%}
+            <tr>
+                <td>{{emp.1}}</td>
+                <td>{{emp.4}}</td>
+                <td>{{emp.2}}</td>
+                <td>{{emp.3}}</td>
+                <td>{{emp.5}}</td>
+                <td>{{emp.9}}</td>
+                <td><a href="empleadores/pago/{{emp.0}}"><button class="btn btn-secondary"><i class="fa fa-history"
+                                aria-hidden="true"></i></button></a></td>
+                <td><a href="empleadores/{{emp.0}}"><button class="btn btn-info"><i class="fa fa-pencil"
+                                aria-hidden="true"></i></button></a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalNueEmpl" tabindex="-1" role="dialog" aria-h5ledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="background: #CCCCFF">
+        <div class="modal-content" >
+            <div class="modal-header" style="background: #003560">
+                <h5 class="modal-title" style="color:mistyrose">Nuevo Empleador</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-h5="Close">
+                    <span aria-hidden="true" style="color: mistyrose;">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background: #CCCCFF">
+                <div class="container">
+                    <form action="/nuevoEmpleador" method="post">
+                        <div class="row">
+                            <div class="col text-center justify-content-between">
+                                    <h5 for="Empleador">Razón Social</h5>
+                                    <input type="text" name="nombEmpleador" id="Empleador" style="width: 300px;" required>
+                                    <br>
+                                    
+                                        <h5 for="cuit">CUIT</h5>
+
+                                    <div class="row d-flex text-center">
+                                        <div class="col text-center">
+                                            <div class="col d-flex justify-content-center">
+                                                <input class="" style="width: 28px;" type="text" name="inicioCuit" id="inicioCuit" minlength="2" maxlength="2" required>
+                                                <p>-</p>
+                                                <input class="" style="width: 100px;" type="text" name="cuit" id="cuit" minlength="8" maxlength="8" required>
+                                                <p>-</p>
+                                                <input class="" style="width: 20px;" type="text" name="finCuit" id="finCuit" minlength="1" maxlength="1" required>
+                                            </div>
+                                         </div>
+                                    </div>
+                                    <br>
+                                    <h5 for="Domicilio">Domicilio</h5>
+                                    <input type="text"  name="Domicilio" id="Domicilio" style="width: 300px;" required>
+                                    <br>
+                                    <h5 for="Localidad">Localidad</h5>
+                                    <input type="text" name="Localidad" id="Localidad" style="width: 300px;" required>
+                                    <br>
+                                    <h5 for="Telefono">Teléfono Celular</h5>
+                                    <input type="number" name="Telefono" id="Telefono" minlength=10 maxlength=10 required>
+                                    <br>
+                                    <h5 for="Telefono">Teléfono Fijo</h5>
+                                    <input type="number" name="TelefonoFijo" id="TelefonoFijo" minlength=6 maxlength=10 required>
+                                    <br>
+                                    <h5 for="email">Email</h5>
+                                    <input type="email" name="email" id="email" style="width: 300px;" required>
+                                    <br>
+                                    <h5 for="usuario">Usuario Empleador</h5>
+                                    <input type="text" name="nombUser" id="nameUser" required placeholder="Usuario para empleador">
+                                    <br>
+                                    <h5 for="email">Contraseña Empleador</h5>
+                                    <input type="password" name="passUser" id="passUser" required placeholder="Contraseña para empleador">
+
+                            </div>
+                        </div>
+                    
+                </div>
+            </div>
+            <div class="modal-footer" style="background: #003560">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script>
+    $(document).ready(function () {
+        $("#buscaEmpleador").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#tablaEmpleadores tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
+
+{% else %}
+<h1>PERMISO DENEGADO</h1>
+
+{% endif %}
+
+<style>
+    td {
+        font-weight: 450;
+    }
+
+    ;
+
+    input {
+        border:1px solid #003560;
+    };
+    #modalNueEmpl {
+        border:0;
+    }
+</style>
+{% endblock body %}

@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "quickstart-1592828900437",
+  "private_key_id": "96a9d95d3f0b7727ffd62f7319d5a75b0dbdc25e",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCsuCZu6nzTl3bb\nBjSykPzn81YdX4Z2xvpCx6syS844VH/ipiTbDAAyesejHwJKPfjqrEpJRXxzUr7V\nfYdbri8GsB1XmPgur4nbXbJex6PYNhcWOf3rCYRXDJN9HKZSLDnv231s9GMd67pN\nKBqsNTQQAAkPH9mM8ocCsUfUYNOWBGECMLCARGfKhRY/BlxDBHnPTv9PfEYq1oCZ\nzcInGZVI8sfzetW9AjVTtSto9KBFphCyPaWvUHOxHy497M20LOGNfLamARrcNvAY\nH2qspIxkmX281AmDu+PMqlJ5VzJMhfi7aM+PYjFfDxeRZ4VlbD8UzHiYHDGPna48\nhys21ARBAgMBAAECggEAQcSBRfzd+UgUhwQO7uvMkZoT8W1daz8LLoCPTMCWztZG\nOAyhvhMMxCwCdrepDJIahWmDg/EEmXkpl2uMLjneSEKpeaCS6FwJN1GvSO3mEr9N\n/TWp3WSrUuZEBwDwyBt1GENQuDs6vrrzHswlk+tSXsFUscCj+0qiZEETI+iWyOlS\nk/kRq0sErPGeec4MAO1fufbNv9kxAcFx5wQv+j9wvvz81jTHZHz6lRHq6KKAYmaE\nvSUnKX8IY5UYsu5Mn+jF5F4d2GwqKd40vAQyxIv+jO9pU+vqgwLRT6knITVWX0eF\nMBm6pWFdVmylkwMSutzvJYi8GJA8u0QpNpX/iGMNXQKBgQDuB+t/l8O6TX9d6Vlj\nfqx6YYTyRKBVCiLcggBDnYqwo+haQV9JyYxz02KSnPALvjPt5g87fSEIkFwyGYRi\nwD9sDrF+XARr3wUu8HHdKQE/Z/gwloE2U4orBGP97mC8AmeSjdFv2t8E6OEz0ANa\nMfNWq1EhBQUo3KYuOQbo5P1+kwKBgQC5wgwYmil15ewhkmkibUa5330YSg1JXyFO\nt6DxHBNXGrADHlk+xhp+7v8AN5V9txuQNSMDt7J4ttFIR7+RaOFYg4Cbnb9Pt+UG\neBrhJNJDUvc5PA8IVo64xGRrpCR5wCS77BeD0vWcGK8LM+ZfMQ4Dubwoq3iO5Sme\nNPm1M0WiWwKBgDPmwjDWFLWAxG7jvLv3GQCuVuDEmfkw9p0CM7CKn30YoEddzbs3\nGUsAIpQ5aBYHaSdMbLHZ/OPzJkc+TSGDLdEP+x/ETKqAvI6ZmxpQIJeEwhdGGfKQ\nkKYElRD/c1RLae4IwkwTe2GEreYwSyrVjWuue0gp4hAg3JNjl+AcXjHFAoGAJ9Zk\nz7XoJF+952lF4Ns8qsoyQs5G0TB0rTQWcP8LasfPbavJifvkXMqWp45EIiTt5Vxv\n+PEhdmAGvBCfFek/QsNZBoarK8aNeHizkwtZiJS3bm/h7XDaxOdhffBC3lWFy0OT\nu3K3t9VXXPixdELJ9aSUpMg5X7Pn3AUSdHjdezcCgYEA2tgVIx9kKI2+Y1SC1Rjm\nuH1KU588hwJAeWYqDo+oolwt+jx8dsXcafsVZSUj5UtDoZxP1Mse1PN/4T+GmFUA\nvlVMdh4YigwVk5iH6uZnIqYdnnqOoXp15cuGQ9diSBihiLdfIJSpwLVrQDTT1JU0\nLlGRaNAJF91Zd3VzPPO34NQ=\n-----END PRIVATE KEY-----\n",
+  "client_email": "sindicatocarneriocuartoservice@quickstart-1592828900437.iam.gserviceaccount.com",
+  "client_id": "118052057702081882826",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/sindicatocarneriocuartoservice%40quickstart-1592828900437.iam.gserviceaccount.com"
+}

@@ -1,0 +1,60 @@
+{% extends 'layout.html' %} {% block title %} Inicio-SISGEPA {% endblock %}
+
+{% block body %}
+
+    <!-- columna para los msjs flash de flask -->
+    {% with messages = get_flashed_messages(with_categories = true ) %} {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible" role="alert">
+      {{ message }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+{% endfor %} {% endif %} {% endwith %}
+<!-- Todos estos 'ends' son de los for,if,with del bloque que maneja los flash -->
+
+
+<div class="row">
+  <div class="col text-center">
+    <div class="row">
+      <div class="col text-center">
+        <div class="display-3" style="font-family: 'Titillium Web', sans-serif;font-size:3rem;color: rgb(16, 1, 83);">
+          <b>Bienvenido al Sistema de Boleta de Pago del Sindicato de la Carne Rio Cuarto</b>
+          <p><b>(SISGEPA)</b></p>
+        </div>
+        <div class="display-3" style="font-family: 'Titillium Web', sans-serif;font-size:1.8rem;color: rgb(16, 1, 83);">
+          <p>Si ingresás por primera vez al sistema, podes acceder al instructivo aquí: </p>
+          <a href="/static/resources/InstructivoSistemaPago.pdf" download>
+            <button class="downloadbtn"><i class="fa fa-download"></i> Descargar</button>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="height: 240px;"></div>
+    <div class="row">
+      <div class="col"></div>
+      <div class="col"></div>
+      <div class="col"></div>
+      <div class="col" style="font-family:'Yellowtail', cursive; font-size: 1.7rem;color: rgb(16, 1, 83) ">Fabio Oviedo Conducción</div>
+    </div>
+    <div class="espacio"> </div>
+  </div>
+</div>
+  <script>
+    $("#fondo").removeClass('d-none')
+  </script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Yellowtail&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300&family=Yellowtail&display=swap');
+
+.espacio {
+  height: 580px;
+}
+</style>
+
+
+  {% endblock %}
+  <!-- FIN DEL BLOQUE QUE MUESTRA EL CONTENIDO DEL TEMPLATE -->

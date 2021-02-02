@@ -1,0 +1,192 @@
+{% extends 'layout.html' %} {% block title %} Perfil Empleador-SISGEPA {% endblock %}
+
+{% block body %}
+{% with messages = get_flashed_messages(with_categories = true ) %} {% if messages %}
+{% for category, message in messages %}
+<div class="alert alert-{{ category }} alert-dismissible" role="alert">
+    {{ message }}
+    <button type="button" class="close" data-dismiss="alert" aria-h5="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endfor %} {% endif %}{% endwith %}
+
+
+{% for perEmp in perfilEmpleador %} <!-- perEmp array del empleador seleccionado-->
+<div class="row mt-4">
+    <div class="col-2">
+        <a href="/empleadores" class="btn btn-info"><i class="fa fa-arrow-left" aria-hidden="true"></i> Atras</a>
+    </div>
+    <div class="col-8 text-center">
+        <div class="display-4" style="font-size: 2rem;">Perfil {{perEmp.1}}</div>
+    </div>
+    <div class="col-2"></div>
+</div>
+<form action="/modificarPerfil" method="POST">
+    <!-- Tengo que enviar el id del empleador que viene -->
+    <input type="text" name="idEmp" class="d-none" value={{id_emp}}>
+    <div class="row mt-4"></div>
+    <div class="col mt-4">
+        <div class="row">
+            <div class="col">
+                <label for="razonSocial">Razon Social</label>
+                <input type="text" id="razonSocial" name="razonSocial" value="{{perEmp.1}}" class="form-control" disabled required>
+            </div>
+            <div class="col">
+                <label for="cuit">CUIT</label>
+                <input type="text" id="cuit" name="cuit" value="{{perEmp.4}}" class="form-control" disabled required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="domicilio">Domicilio</label>
+                <input type="text" id="domicilio" name="Domicilio" value="{{perEmp.2}}" class="form-control" disabled required>
+            </div>
+            <div class="col">
+                <label for="localidad">Localidad</label>
+                <input type="text" id="localidad" name="Localidad" value="{{perEmp.3}}" class="form-control" disabled required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">
+                <label for="telefono">Telefono Celular</label>
+                <input type="tel" minlength="10" maxlength="10" id="telefono" name="Telefono" value="{{perEmp.6}}" class="form-control" disabled required>
+            </div>
+            <div class="col-3">
+                <label for="telefono">Telefono Fijo</label>
+                <input type="tel" minlength="6" maxlength="11" id="telefonofijo" name="TelefonoFijo" value="{{perEmp.5}}"
+                    class="form-control" disabled required>
+            </div>
+            <div class="col-6">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" value="{{perEmp.9}}" class="form-control" disabled required>
+            </div>
+        </div>
+        <br><br>
+        <div class="row">
+            <div class="col text-center">
+                <button type="button" class="btn btn-secondary" id="editar">Editar Datos</button>
+                <button type="submit" class="btn btn-success " id="guardar" >Guardar Cambios</button>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col text-center">
+                <a href="#"  id="resetear" data-toggle="modal" data-target="#modelId"><h5> Resetear Contraseña</h5></a>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Reseteo de Contraseña</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                  
+                    <div class="card-body">
+                  
+                        <h5 class="card-text">Desea Resetear la Contraseña de {{perEmp.1}}</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="confirmaReseteo">Resetear</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal Nueva Pass -->
+<div class="modal fade" id="modalNewPass" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Reseteo Confirmado</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col text-center">
+                       <h5> La nueva contraseña de {{perEmp.1}} es:</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col text-center">
+                        <p id="nuevaPass"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    //Click en editar, desbloqueo los input
+    $("#editar").click(()=>{
+        $(".form-control").removeAttr('disabled')
+    })    
+
+    $("#confirmaReseteo").click(() => {
+            idEmpl='{{id_emp}}';
+            
+            $.ajax({
+            url: '/resetearPass',
+            type: 'post',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify([{
+                "idEmpl": idEmpl,
+            }]),
+            success: function (data) {
+                if (data.Mensaje == 'Correcto') {
+                    $("#modelId").modal('hide')
+
+                    $("#nuevaPass").html(data.Pass+'<br><p>Usuario:'+data.Usuario+'<p>')
+                    $("#modalNewPass").modal('show')
+                }
+            }
+        });
+
+
+
+
+            
+            
+        })
+
+
+
+</script>
+
+
+
+
+{% endfor %}
+
+
+
+
+
+
+
+
+{% endblock body %}

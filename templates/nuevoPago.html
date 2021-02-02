@@ -1,0 +1,262 @@
+{% extends 'layout.html' %} {% block title %} Gen. Pago-SISGEPA {% endblock %}
+
+{% block body %}
+
+<!-- APLICAR RESTRICCIONES DE PERMISO PARA EL ID DEL USUARIO...NO SOLO TIPO DE USUARIO -->
+
+
+
+<div class="row">
+  <div class="col text-center">
+    <h2>INFORMAR PAGO</h2>
+    <br>
+    {% if session['tipoUser'] == 1 or session['tipoUser'] == 3 %}
+    <form action="/confirmarPago" method="post">
+    {%endif%}
+    {% if session['tipoUser'] == 2 %}
+    <form action="/informarPago" method="post" enctype='multipart/form-data'>
+      {%endif%}
+        <input class="d-none" name="idBoleta" value={{boleta.0.0}}>
+        <div class="form-group ">
+          <label for="input3" class='labelNuevoPago'>MES DE LIQUIDACIÓN</label>
+          <input style="text-align:center;" type="text" class="form-control w-auto  inp" id="input3" value={{boleta.0.4.strftime('%m-%Y')}} disabled>
+        </div>
+        <div class="form-group">
+          <label for="input1" class="mx-auto labelNuevoPago">CANTIDAD DE EMPLEADOS</label>
+            <input style="text-align:center;" type="text" name = 'Empleados' class="form-control w-auto inp" id="NPago" value={{boleta.0.9}} disabled>
+        </div>
+        <div class="form-group ">
+          <label for="input2" class ='labelNuevoPago' >MONTO</label>
+            <input style="text-align:center;" type="text" name = 'input2' class="form-control w-auto inp" id="input2" value={{"${:,.2f}".format((boleta.0.6*30/1000)+boleta.0.8)}} disabled>
+        </div>
+
+
+      {% if session['tipoUser'] == 2%}
+        <!-- <label for="Boleta" class='mt-3 labelNuevoPago'>BOLETA</label>
+        <div id='msjParaSubir' class="d-none mt-1"> <b>BOLETA ELEGIDA</b> , Presione el botón "SUBIR" de la derecha para continuar</div> 
+          <div class="input-group"> 
+            <div class="custom-file">             
+              <input type="file" class="custom-file-input" name = 'fileBoleta'  id="fileBoleta" lang='es'>
+              <label  id ="fileBoletaNombre" class="custom-file-label mt-2" for="fileBoletaNombre">Elija su <b>BOLETA</b>.Archivo formato 'pdf', 'png', 'jpg' o 'jpeg'(max 512KB) Nombre sin puntos,acentos ni espacios</label>
+              <input type="hidden" id="fileBoletaNombreHidden" name="fileBoletaNombreHidden" >
+            </div>
+            <div class="input-group-append">
+                <button type="button" class="btn btn-info mt-2" id ='subirBoleta'>SUBIR</button>                            
+            </div>
+          </div> 
+          <div id='msjParaElegirComprobante' class="d-none mt -1"> <b>BOLETA SUBIDA</b>. Ahora aquí abajo elija su COMPROBANTE de pago correspondiente para subir</div> -->
+
+          <label for="Comprobante" class='mt-4 labelNuevoPago'>COMPROBANTE PAGO</label>
+          <div id='msjParaSubirComprobante' class="d-none mt-1"> <b>COMPROBANTE ELEGIDO</b>. Presione el botón <b>"SUBIR"</b> de la derecha para continuar</div> 
+          <div class="input-group"> 
+            <div class="custom-file">             
+              <input type="file" class="custom-file-input" name = 'fileComprobante'  id="fileComprobante" lang='es'>
+              <label  id ="fileComprobanteNombre" class="custom-file-label mt-2" for="fileComprobanteNombre">Elija su <b>COMPROBANTE</b>.Archivo formato 'pdf', 'png', 'jpg' o 'jpeg'(max 1MB) Nombre sin puntos,acentos ni espacios</label>
+              <input type="hidden" id="fileComprobanteNombreHidden" name="fileComprobanteNombreHidden" >
+            </div>
+            <div class="input-group-append">
+                <button type="button" class="btn btn-info mt-2" id ='subirComprobante'>SUBIR</button>                            
+            </div>
+          </div> 
+          <div id='msjParaInformar' class="d-none"> <b>COMPROBANTE SUBIDO</b>. Presione el botón <b>"INFORMAR"</b> para terminar la operación</div> 
+      {%endif%}
+        
+      <br>
+      {% if session['tipoUser'] == 1 or session['tipoUser'] == 3 %}
+        <button type="submit" class="btn btn-primary" id="confirmarPago">Confirmar</button>
+      {%endif%}
+      {% if session['tipoUser'] == 2%}
+      <button type="submit" class="btn btn-primary mb-0 disabled"  id="informarPago" onclick= "return confirm_informarPago()" >INFORMAR</button>
+      <button type="button" class="btn btn-warning ml-5"  id="limpiarForm" onclick ="return confirm_limpiarInformarPago()">LIMPIAR</button>
+      <a href="/pagos" class="btn btn-danger ml-5" onclick="return confirm_cancelarInformarPago()">CANCELAR</a>                          
+      {%endif%}
+      </form>
+      
+  </div>
+</div>
+
+<style>
+  .inp{
+    margin: auto;
+  }
+</style>
+
+<script>
+//  $("#fileBoleta").change(()=>{
+//         if(($("#fileBoleta").val())>0){
+//            $("#subirBoleta").removeClass('disabled')
+//         }else{
+//              $("#subirBoleta").addClass('disabled')
+//              alert('tiene que seleccionar un archivo de su computadora para subir')
+//         }
+//     }) 
+
+$(document).ready(function () {
+  $("#informarPago").attr("disabled", true);
+  // $("#subirBoleta").attr("disabled",true);
+  $("#subirComprobante").attr("disabled",true);
+
+})
+
+
+// ELEGIMOS EL FILE Y LE CAMBIAMOS EL NOMBRE AL LABEL CON EL DEL ARCHIVO SELECCIONADO
+
+// jQuery.noConflict();
+// var fdBoleta = new FormData();
+// jQuery('#fileBoleta').on ('change', function(){
+//   // $("#subirBoleta").removeClass('disabled') //habilitamos el boton 'subir' una vez que selecciona un archivo valido
+//   var fileBoleta = this.files[0]; //almacenamos en una variable el archivo
+//   if (fdBoleta){
+//     fdBoleta.append ('fileBoleta', fileBoleta);
+//     jQuery.ajax({
+//       url: 'elegirBoleta', //lo mandamos a esta URL
+//       type: 'POST',
+//       data: fdBoleta, //la data q le pasamos
+//       processData: false,
+//       contentType: false,            
+      
+//       success: function (data) { // si todo va bien,devolvemos esto
+//           if (data.Mensaje == 'Correcto') {
+//               nombreArchivo=data.nombreArchivo,
+//               fileBoletaNombreCorregido = data.fileBoletaNombreCorregido,
+//               console.log ('fileBoletaNombreCorregido ->',data.fileBoletaNombreCorregido)
+//               console.log('nombre del archivo seleccionado -> ',nombreArchivo)
+//               $("#fileBoletaNombre").text(fileBoletaNombreCorregido) // le asignamos el nombre del archivo selec. al label del input
+//               $("#fileBoletaNombreHidden").attr({"value": fileBoletaNombreCorregido})
+//               $("#msjParaSubir").removeClass("d-none") //con esto se muestra el msj para que presione subir
+              
+//               $("#subirBoleta").attr('disabled',false);
+              
+//           }
+//     }
+// });
+//   }
+// });
+
+// $(document).ready(function(){
+  // $("#subirBoleta").prop("onclick", null).off("click");
+  //aca manejams para subir la boleta tras click en el btn
+  // jQuery("#subirBoleta").click(function () {
+       
+  //     //  var boletaElegida = fileBoleta; //almacenamos en una variable el archivo
+  // if (fdBoleta){
+  //   jQuery.ajax({
+  //     url: 'subirBoleta', //lo mandamos a esta URL
+  //     type: 'POST',
+  //     data: fdBoleta, //la data q le pasamos
+  //     processData: false,
+  //     contentType: false,       
+
+  //     success: function (data) { // si todo va bien,devolvemos esto
+  //         if (data.Mensaje == 'Correcto') {
+  //             boletaSubida = fdBoleta,
+  //             nombreBoletaSubida=data.nombreArchivo,
+  //             console.log('nombre del archivo subido -> ',nombreArchivo);
+  //             $("#fileBoletaNombre").text(nombreArchivo);
+  //             $("#msjParaElegirComprobante").removeClass("d-none") 
+  //             $("#msjParaSubir").addClass("d-none")
+  //         }
+  //   } //fin success
+  //   })//fin jquery.ajax
+  // } // fin if fdboleta
+      
+  //   }) // fin subir boleta click func
+
+// }); //fin document.ready
+
+//aca manejamos para ELEGIR el comprobante de pago
+jQuery.noConflict();
+var fdComprobante = new FormData();
+jQuery('#fileComprobante').on ('change', function(){
+  // $("#subirBoleta").removeClass('disabled') //habilitamos el boton 'subir' una vez que selecciona un archivo valido
+  var fileComprobante = this.files[0]; //almacenamos en una variable el archivo
+  if (fdComprobante){
+    fdComprobante.append ('fileComprobante', fileComprobante);
+    jQuery.ajax({
+      url: 'elegirComprobante', //lo mandamos a esta URL
+      type: 'POST',
+      data: fdComprobante, //la data q le pasamos
+      processData: false,
+      contentType: false,            
+      
+      success: function (data) { // si todo va bien,devolvemos esto
+          if (data.Mensaje == 'Correcto') {
+              nombreArchivoComprobante=data.nombreArchivoComprobante,
+              fileComprobanteNombreCorregido = data.fileComprobanteNombreCorregido,
+              console.log ('fileComprobanteNombreCorregido ->',data.fileComprobanteNombreCorregido)
+              console.log('nombre del archivo seleccionado -> ',nombreArchivoComprobante)
+              $("#fileComprobanteNombre").text(fileComprobanteNombreCorregido) // le asignamos el nombre del archivo selec. al label del input
+              $("#fileComprobanteNombreHidden").attr({"value": fileComprobanteNombreCorregido})
+              $("#msjParaSubirComprobante").removeClass("d-none") //con esto se muestra el msj para que presione subir
+              $("#msjParaElegirComprobante").addClass("d-none")
+                         
+              $("#subirComprobante").attr('disabled',false);
+              
+          }
+    }
+});
+  }
+});
+
+
+
+//aca manejamos para subir el comprobante una vez elegido 
+jQuery("#subirComprobante").click(function () {
+       $("#informarPago").removeClass('disabled')
+      //  var boletaElegida = fileBoleta; //almacenamos en una variable el archivo
+  // if (fdBoleta && fdComprobante ){
+  if (fdComprobante ){
+    jQuery.ajax({
+      url: 'subirComprobante', //lo mandamos a esta URL
+      type: 'POST',
+      data: fdComprobante, //la data q le pasamos
+      processData: false,
+      contentType: false,       
+
+      success: function (data) { // si todo va bien,devolvemos esto
+          if (data.Mensaje == 'Correcto') {
+              comprobanteSubido = fdComprobante,
+              nombreComprobanteSubido=data.nombreArchivoComprobante,
+              console.log('nombre del archivo subido -> ',nombreArchivoComprobante);
+              $("#fileComprobanteNombre").text(nombreArchivoComprobante);
+              $("#informarPago").attr("disabled", false);
+              $("#msjParaSubir").addClass("d-none");
+              $("#msjParaSubirComprobante").addClass("d-none");
+              $("#msjParaInformar").removeClass("d-none") //con esto se muestra el msj para que presione informar
+          }
+    } //fin success
+    })//fin jquery.ajax
+  } // fin if fdboleta
+      
+    }) // fin subir boleta click func
+
+
+
+jQuery("#limpiarForm").click(function () {
+    // $('#fileComprobante').val(''); 
+    // $('#fileBoleta').val(''); 
+    // $('#fileBoletaNombre').val(''); 
+    // $("#fileBoletaNombre").text("Elija su BOLETA .Archivo formato 'pdf', 'png', 'jpg' o 'jpeg'(max 512KB) Nombre sin puntos,acentos ni espacios");
+    // $('#fileComprobanteNombre').val(''); 
+    // $("#fileComprobanteNombre").text("Elija su COMPROBANTE.Archivo formato 'pdf', 'png', 'jpg' o 'jpeg'(max 512KB) Nombre sin puntos,acentos ni espacios");    
+    // $('#fileComprobanteNombreHidden').val('');
+    // $('#fileBoletaNombreHidden').val('');
+    location.reload();
+    
+});
+
+//  VENTANAS DE CONFIRM
+function confirm_informarPago() {
+  return confirm('¿Estás seguro que deseas confimar el pago del mes correspondiente? \n Recuerda que se imputarán la boleta y el comprobante seleccionados con anterioridad y \n  no podrás deshacer esta acción.');
+}
+
+function confirm_limpiarInformarPago() {
+  return confirm('¿Estás seguro que deseas limpiar el formulario actual? \n Se perderá todo tu progreso realizado y deberás seleccionar tus archivos nuevamente.');
+}
+function confirm_cancelarInformarPago() {
+  return confirm('¿Estás seguro que deseas abandonar esta página? \n Se perderá todo tu progreso realizado  y\n volverás a la pantalla de pagos.');
+}
+
+</script>
+
+{% endblock body %}
